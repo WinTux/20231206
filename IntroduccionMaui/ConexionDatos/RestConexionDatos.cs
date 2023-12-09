@@ -1,6 +1,7 @@
 ﻿using IntroduccionMaui.Maodels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -24,24 +25,103 @@ namespace IntroduccionMaui.ConexionDatos
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
         }
-        public Task AddPlatoAsync(Plato plato)
+        public async Task AddPlatoAsync(Plato plato)
         {
-            throw new NotImplementedException();
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                Debug.WriteLine("[RED] Sin acceso a la red.");
+                return;
+            }
+            try {
+                //Serializamos el objeto plato
+                string platoSer = JsonSerializer.Serialize<Plato>(plato, opcionesJson);
+                StringContent contenido = new StringContent(platoSer, Encoding.UTF8,"application/json");
+                HttpResponseMessage respuesta = await HttpClient.PostAsync($"{url}/plato", contenido);
+                if(respuesta.IsSuccessStatusCode)
+                    Debug.WriteLine("[SERVER] Se registró correctamente.");
+                else
+                    Debug.WriteLine("[SERVER] Sin respuesta HTTP satisfactoria (2XX).");
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] {ex.Message}");
+            }
+            return;
         }
 
-        public Task DeletePlato(int id)
+        public async Task DeletePlato(int id)
         {
-            throw new NotImplementedException();
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                Debug.WriteLine("[RED] Sin acceso a la red.");
+                return;
+            }
+            try
+            {
+                HttpResponseMessage respuesta = await HttpClient.DeleteAsync($"{url}/plato/{id}");
+                if (respuesta.IsSuccessStatusCode)
+                    Debug.WriteLine("[SERVER] Se modificó correctamente.");
+                else
+                    Debug.WriteLine("[SERVER] Sin respuesta HTTP satisfactoria (2XX).");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] {ex.Message}");
+            }
+            return;
         }
 
-        public Task<List<Plato>> GetPlatosAsync()
+        public async Task<List<Plato>> GetPlatosAsync()
         {
-            throw new NotImplementedException();
+            List<Plato> platos = new List<Plato>();
+            if(Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                Debug.WriteLine("[RED] Sin acceso a la red.");
+                return platos;
+            }
+            try
+            {
+                HttpResponseMessage response = await HttpClient.GetAsync($"{url}/plato");
+                if (response.IsSuccessStatusCode)
+                {
+                    //Deserializamos
+                    var contenido = await response.Content.ReadAsStringAsync();
+                    platos = JsonSerializer.Deserialize<List<Plato>>(contenido, opcionesJson);
+                }
+                else
+                {
+                    Debug.WriteLine("[SERVER] Sin respuesta HTTP satisfactoria (2XX).");
+                }
+            }catch(Exception e)
+            {
+                Debug.WriteLine($"[ERROR] {e.Message}");
+            }
+            return platos;
         }
 
-        public Task UpdatePlatoAsync(Plato plato)
+        public async Task UpdatePlatoAsync(Plato plato)
         {
-            throw new NotImplementedException();
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                Debug.WriteLine("[RED] Sin acceso a la red.");
+                return;
+            }
+            try
+            {
+                //Serializamos el objeto plato
+                string platoSer = JsonSerializer.Serialize<Plato>(plato, opcionesJson);
+                StringContent contenido = new StringContent(platoSer, Encoding.UTF8, "application/json");
+                HttpResponseMessage respuesta = await HttpClient.PutAsync($"{url}/plato/{plato.Id}", contenido);
+                if (respuesta.IsSuccessStatusCode)
+                    Debug.WriteLine("[SERVER] Se modificó correctamente.");
+                else
+                    Debug.WriteLine("[SERVER] Sin respuesta HTTP satisfactoria (2XX).");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ERROR] {ex.Message}");
+            }
+            return;
         }
     }
 }
