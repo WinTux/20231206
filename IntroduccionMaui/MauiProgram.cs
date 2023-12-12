@@ -1,4 +1,5 @@
 ﻿using IntroduccionMaui.ConexionDatos;
+using IntroduccionMaui.Pages;
 using Microsoft.Extensions.Logging;
 
 namespace IntroduccionMaui
@@ -17,6 +18,7 @@ namespace IntroduccionMaui
                 });
             builder.Services.AddSingleton<IRestConexionDatos,RestConexionDatos>();
             builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddTransient<GestionPlatosPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();
