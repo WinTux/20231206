@@ -32,6 +32,10 @@ namespace IntroduccionMaui
         async void OnPlatoCambiadoClic(object sender, SelectionChangedEventArgs e)
         {
             Debug.WriteLine("[EVENTO] Botón PlatoCambiado clickeado");
+            var param = new Dictionary<string, object> {
+                {nameof(Plato), e.CurrentSelection.FirstOrDefault() as Plato}
+            };
+            await Shell.Current.GoToAsync(nameof(GestionPlatosPage), param);
         }
     }
 

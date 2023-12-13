@@ -2,11 +2,18 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="IntroduccionMaui.Pages.GestionPlatosPage"
-             Title="GestionPlatosPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Gestión de platos">
+    <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,*,*" ColumnSpacing="5">
+        <TableView Intent="Data" Grid.Row="0" Grid.ColumnSpan="3">
+            <TableRoot>
+                <TableSection Title="Acciones a realizar">
+                    <EntryCell Placeholder="Introduzca nombre de plato" Text="{Binding Path=plato.Nombre}"/>
+                </TableSection>
+            </TableRoot>
+        </TableView>
+        <Button Text="Guardar" Clicked="OnGuardarClic" Grid.Row="1" Grid.Column="0" Margin="20,5"/>
+        <Button Text="Eliminar" Clicked="OnEliminarClic" Grid.Row="1" Grid.Column="1" Margin="0,5"/>
+        <Button Text="Cancelar" Clicked="OnCancelarClic" Grid.Row="1" Grid.Column="2" Margin="20,5"/>
+    </Grid>
+    
 </ContentPage>
