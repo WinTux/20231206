@@ -15,9 +15,9 @@ namespace IntroduccionMaui.ConexionDatos
         private readonly string dominio;
         private readonly string url;
         private readonly JsonSerializerOptions opcionesJson;
-        public RestConexionDatos()
+        public RestConexionDatos(HttpClient httpClient)
         {
-            HttpClient = new HttpClient();
+            HttpClient = httpClient;//new HttpClient();
             dominio = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5089" : "http://localhost:5089";
             url = $"{dominio}/api";
             opcionesJson = new JsonSerializerOptions
